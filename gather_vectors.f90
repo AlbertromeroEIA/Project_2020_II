@@ -3,9 +3,9 @@ program vectors
 implicit none
 include 'mpif.h'
 
-integer                ::   ierror, workerid, numproc
+integer                ::   ierror, workerid, numproc,chunksize,remainder
 real(8),dimension(23)  ::   Va, Vb, Vc
-integer                ::   i, master, mida
+integer                ::   i, master, mida,start,fin
 
 call MPI_INIT(ierror)
 call MPI_COMM_RANK(MPI_COMM_WORLD,workerid,ierror)
@@ -18,7 +18,20 @@ do i=1,size(Vb)
     Vb(i)=dble(i)
 enddo
 
-do i=workerid+1,size(Vc),numproc  ! repartició de feina en índexs saltejats
+chunksize = size(Va)/numproc
+remainder = mod(size(Va),numproc)
+
+if (workerid .lt. remainder) then
+    start = workerid * (chunksize + 1) + 1
+    fin = start + chunksize 
+
+else
+    start = workerid * chunksize + remainder + 1
+    fin = start + (chunksize - 1)
+
+end if
+
+do i=start,fin  ! repartició de feina en índexs saltejats
     Vc(i)= Va(i) + Vb(i)
 end do
 

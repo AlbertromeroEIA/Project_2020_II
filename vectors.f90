@@ -22,13 +22,14 @@ enddo
 
 do i=workerid+1,size(Vc),numproc
     Vc(i)= Va(i) + Vb(i)
+    
 enddo
 
 !call MPI_BARRIER(MPI_COMM_WORLD,ierror)
 
 
 if (workerid /= master) then
-   call MPI_SEND(Vc(workerid+1:size(Vc):numproc),size(Vc(workerid+1:size(Vc):numproc)),MPI_DOUBLE_PRECISION,master,1,MPI_COMM_WORLD,ierror)
+   call MPI_SEND(Vc(workerid+1:size(Vc):numproc),size(Vc(workerid+1:size(Vc):numproc)),MPI_DOUBLE_PRECISION,master,1,MPI_COMM_WORLD)
 endif
 
 if (workerid == master) then
