@@ -3,7 +3,6 @@ module integration
   use def_variables
   use Forces_LJ
   use pbc
-  use mpi
 
 contains
 
